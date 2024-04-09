@@ -9,10 +9,6 @@ namespace QtMath
 class QtMathLibrary
 {
 public:
-	QtMathLibrary() = default;
-	~QtMathLibrary() = default;
-
-public:
 	/// <summary>
 	/// 角度转弧度
 	/// </summary>

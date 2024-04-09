@@ -1,8 +1,8 @@
 <UI version="4.0" >
- <class>QtSoftRendererMainWindow</class>
- <widget class="QMainWindow" name="QtSoftRendererMainWindow" >
+ <class>QuiSoftRendererMainWindow</class>
+ <widget class="QMainWindow" name="QuiSoftRendererMainWindow" >
   <property name="objectName" >
-   <string notr="true">QtSoftRendererMainWindow</string>
+   <string notr="true">QuiSoftRendererMainWindow</string>
   </property>
   <property name="geometry" >
    <rect>
@@ -13,7 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>QtSoftRendererMainWindow</string>
+   <string>QuiSoftRendererMainWindow</string>
   </property>
   <widget class="QMenuBar" name="menuBar" />
   <widget class="QToolBar" name="mainToolBar" />

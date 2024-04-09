@@ -1,4 +1,4 @@
-﻿# CMakeList.txt: SoftRendererApp 的 CMake 项目，在此处包括源代码并定义
+# CMakeList.txt: SoftRendererApp 的 CMake 项目，在此处包括源代码并定义
 # 项目特定的逻辑。
 #
 
@@ -13,11 +13,11 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/out)
 # set(CMAKE_AUTORCC ON)
 
 if (MSVC)
-	set(QT_VERSION_MAJOR 5)
-	add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/source-charset:utf-8>")
+	set(QT_VERSION_MAJOR 6)
+	add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
-set(QT_PREFIX_PATH "D:/Qt/Qt5.14.2/5.14.2/msvc2017_64")
+set(QT_PREFIX_PATH "C:/Qt/6.4.1/msvc2019_64")
 set(CMAKE_PREFIX_PATH ${QT_PREFIX_PATH})
 
 include_directories(
@@ -40,7 +40,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 	QT6_WRAP_UI(QT_FORMS_FILES ${QT_FORMS})
 	QT6_WRAP_CPP(QT_MOC_FILES ${QT_MOC})
 	qt_add_executable(SoftRendererApp
-		MANUAL_FINALIZATION
+		#MANUAL_FINALIZATION # 带控制台
+		WIN32
 		${QT_RESOURCES_FILES}
 		${QT_MOC_FILES}
 		${QT_FORMS_FILES}
