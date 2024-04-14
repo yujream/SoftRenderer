@@ -5,7 +5,8 @@
 
 #include "QtFrameBuffer.h"
 #include "core/QtColor.h"
-#include "QtPaint.h"
+#include "QtRender.h"
+#include "core/QtConfig.h"
 
 class QtCanvas : public QObject
 {
@@ -19,12 +20,13 @@ public:
 	void* getCanvas() const;
 	void clear();
 
-	void drawPoint(unsigned x, unsigned y, const QtColor& color);
+	void drawPoint(const QtPoint& point);
+	void drawLine(const QtPoint& p1, const QtPoint& p2, DrawLineType type = DrawLineType::DLT_Brensanham);
 
 private:
 	QtFrameBuffer* m_canvasBuffer{ nullptr };
 
-	QtPaint* m_paint;
+	QtRender* m_paint;
 };
 
 #endif

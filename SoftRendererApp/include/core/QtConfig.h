@@ -7,4 +7,11 @@ namespace QtGlobal
 	const int canvasHeight = 800;
 }
 
+enum class DrawLineType
+{
+	DLT_DDA,
+	DLT_Mid,
+	DLT_Brensanham
+};
+
 #endif

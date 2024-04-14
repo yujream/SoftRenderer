@@ -32,7 +32,35 @@ void QtCanvas::clear()
 	m_canvasBuffer->fill(0xff000000);
 }
 
-void QtCanvas::drawPoint(unsigned x, unsigned y, const QtColor& color)
+void QtCanvas::drawPoint(const QtPoint& point)
 {
-	m_canvasBuffer->setPixel(x, y, color);
+	m_canvasBuffer->setPixel(point.cx(), point.cy(), point.getColor());
+}
+
+void QtCanvas::drawLine(const QtPoint& p1, const QtPoint& p2, DrawLineType type)
+{
+	std::vector<QtPoint> line;
+	switch (type)
+	{
+	case DrawLineType::DLT_DDA:
+		QtRender::drawDDALine(p1, p2, line);
+		break;
+	case DrawLineType::DLT_Mid:
+		break;
+	case DrawLineType::DLT_Brensanham:
+		QtRender::drawBrensanhamLine(p1, p2, line);
+		break;
+	default:
+		break;
+	}
+
+	if (line.empty())
+	{
+		return;
+	}
+
+	for (const QtPoint& point : line)
+	{
+		drawPoint(point);
+	}
 }

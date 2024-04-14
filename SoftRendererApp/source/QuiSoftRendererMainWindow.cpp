@@ -4,6 +4,8 @@
 
 #include <QPainter>
 
+#include "algorithm/QtMathLibrary.h"
+
 QuiSoftRendererMainWindow::QuiSoftRendererMainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::QuiSoftRendererMainWindow())
@@ -35,7 +37,8 @@ void QuiSoftRendererMainWindow::initUi()
 void QuiSoftRendererMainWindow::render()
 {
 	m_canvas->clear();
-	renderSnowflack();
+	//renderSnowflack();
+	renderMultiLine();
 }
 
 void QuiSoftRendererMainWindow::renderSnowflack()
@@ -45,9 +48,25 @@ void QuiSoftRendererMainWindow::renderSnowflack()
 		for (unsigned j(0); j < QtGlobal::canvasHeight; ++j)
 		{
 			unsigned char val = std::rand() % 255;
-			QtColor color(val, val, val);
-			m_canvas->drawPoint(i, j, color);
+
+			QtPoint point(i, j, QtColor(val, val, val));
+			m_canvas->drawPoint(point);
 		}
+	}
+}
+
+void QuiSoftRendererMainWindow::renderMultiLine()
+{
+	const int radius = 200;
+	QtPoint center{ 400, 400, QtColor{255, 0, 0} };
+	for (float i(0.f); i < 360.f; i += 10)
+	{
+		float radian = QtMathLibrary::deg2rad(i);
+		unsigned x = radius * std::sin(radian) + center.cx();
+		unsigned y = radius * std::cos(radian) + center.cy();
+
+		QtPoint pt{ x, y, QtColor{0, 0, 255}};
+		m_canvas->drawLine(center, pt, DrawLineType::DLT_DDA);
 	}
 }
 
