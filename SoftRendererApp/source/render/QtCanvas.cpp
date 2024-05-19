@@ -43,12 +43,13 @@ void QtCanvas::drawLine(const QtPoint& p1, const QtPoint& p2, DrawLineType type)
 	switch (type)
 	{
 	case DrawLineType::DLT_DDA:
-		QtRender::drawDDALine(p1, p2, line);
+		QtRender::rasterlizedDDALine(p1, p2, line);
 		break;
 	case DrawLineType::DLT_Mid:
+		QtRender::rasterlizedMidLine(p1, p2, line);
 		break;
 	case DrawLineType::DLT_Brensanham:
-		QtRender::drawBrensanhamLine(p1, p2, line);
+		QtRender::rasterlizedBrensanhamLine(p1, p2, line);
 		break;
 	default:
 		break;
@@ -60,6 +61,17 @@ void QtCanvas::drawLine(const QtPoint& p1, const QtPoint& p2, DrawLineType type)
 	}
 
 	for (const QtPoint& point : line)
+	{
+		drawPoint(point);
+	}
+}
+
+void QtCanvas::drawTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint& p3)
+{
+	std::vector<QtPoint> triangle;
+	QtRender::rasterlizedTriangle(p1, p2, p3, triangle);
+
+	for (const QtPoint& point : triangle)
 	{
 		drawPoint(point);
 	}

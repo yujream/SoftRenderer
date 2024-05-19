@@ -10,22 +10,22 @@
 class QtFrameBuffer
 {
 public:
-	QtFrameBuffer(unsigned width, unsigned height, void* buffer = nullptr);
+	QtFrameBuffer(int width, int height, void* buffer = nullptr);
 	~QtFrameBuffer();
 
 	QtFrameBuffer(const QtFrameBuffer&) = delete;
 
 public:
-	void setPixel(unsigned x, unsigned y, const QtColor& color);
+	void setPixel(int x, int y, const QtColor& color);
 	void fill(const QtColor& color);
 
-	unsigned width() const;
-	unsigned height() const;
+	int width() const;
+	int height() const;
 	QtColor* buffer() const;
 
 private:
-	unsigned m_width{ 0 };
-	unsigned m_height{ 0 };
+	int m_width{ 0 };
+	int m_height{ 0 };
 	QtColor* m_colorBuffer{ nullptr };
 };
 

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-QtPoint::QtPoint(unsigned x, unsigned y, const QtColor& color)
+QtPoint::QtPoint(int x, int y, const QtColor& color)
 {
 	m_xy[0] = x;
 	m_xy[1] = y;
@@ -14,18 +14,18 @@ QtPoint::~QtPoint()
 
 }
 
-void QtPoint::setXY(unsigned x, unsigned y)
+void QtPoint::setXY(int x, int y)
 {
 	m_xy[0] = x;
 	m_xy[1] = y;
 }
 
-void QtPoint::setX(unsigned x)
+void QtPoint::setX(int x)
 {
 	m_xy[0] = x;
 }
 
-void QtPoint::setY(unsigned y)
+void QtPoint::setY(int y)
 {
 	m_xy[1] = y;
 }
@@ -40,32 +40,32 @@ const QtColor& QtPoint::getColor() const
 	return m_color;
 }
 
-unsigned QtPoint::x()
+int QtPoint::x()
 {
 	return m_xy[0];
 }
 
-unsigned QtPoint::y()
+int QtPoint::y()
 {
 	return m_xy[1];
 }
 
-const unsigned QtPoint::cx() const
+const int QtPoint::cx() const
 {
 	return m_xy[0];
 }
 
-const unsigned QtPoint::cy() const
+const int QtPoint::cy() const
 {
 	return m_xy[1];
 }
 
-unsigned& QtPoint::rx()
+int& QtPoint::rx()
 {
 	return m_xy[0];
 }
 
-unsigned& QtPoint::ry()
+int& QtPoint::ry()
 {
 	return m_xy[1];
 }

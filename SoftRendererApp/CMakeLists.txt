@@ -66,3 +66,6 @@ target_link_libraries(SoftRendererApp PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt$
 if(QT_VERSION_MAJOR EQUAL 6)
 	qt_finalize_executable(SoftRendererApp)
 endif()
+
+# 第三方库
+include_directories("../3rd/eigen3")

@@ -1,6 +1,8 @@
 #include "render/QtRender.h"
+#include "Eigen/Eigen"
 #include <cmath>
 
+// 获取插值
 float getInterpolation(const QtPoint& startPoint, const QtPoint& interpPoint, const QtPoint& endPoint)
 {
 	float alpha = 1.f;
@@ -28,7 +30,7 @@ QtRender::~QtRender()
 {
 }
 
-void QtRender::drawDDALine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
+void QtRender::rasterlizedDDALine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
 {
 	int dx = p2.cx() - p1.cx();
 	int dy = p2.cy() - p1.cy();
@@ -55,16 +57,91 @@ void QtRender::drawDDALine(const QtPoint& p1, const QtPoint& p2, std::vector<QtP
 	}
 }
 
-void QtRender::drawMidLine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
+void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
 {
+	int x0 = p1.cx();
+	int x1 = p2.cx();
+	int y0 = p1.cy();
+	int y1 = p2.cy();
+	int a, b, d1, d2, d, x, y; float m;
+	if (x1 < x0) { d = x0, x0 = x1, x1 = d; d = y0, y0 = y1, y1 = d; }
+	a = y0 - y1, b = x1 - x0;
+	if (b == 0) m = -1 * a * 100;
+	else m = (float)a / (x0 - x1); x = x0, y = y0;
+	float alpha = getInterpolation(p1, QtPoint(x, y), p2);
+	QtColor alphaColor;
+	QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+
+	QtPoint point(x, y, alphaColor);
+	line.emplace_back(point);
+	if (m >= 0 && m <= 1)
+	{
+		d = 2 * a + b; d1 = 2 * a, d2 = 2 * (a + b);
+		while (x < x1)
+		{
+			if (d <= 0) { x++, y++, d += d2; }
+			else { x++, d += d1; }
+			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
+			QtColor alphaColor;
+			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+
+			QtPoint point(x, y, alphaColor);
+			line.emplace_back(point);
+		}
+	}
+	else if (m <= 0 && m >= -1)
+	{
+		d = 2 * a - b; d1 = 2 * a - 2 * b, d2 = 2 * a;
+		while (x < x1)
+		{
+			if (d > 0) { x++, y--, d += d1; }
+			else { x++, d += d2; }
+			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
+			QtColor alphaColor;
+			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+
+			QtPoint point(x, y, alphaColor);
+			line.emplace_back(point);
+		}
+	}
+	else if (m > 1)
+	{
+		d = a + 2 * b; d1 = 2 * (a + b), d2 = 2 * b;
+		while (y < y1)
+		{
+			if (d > 0) { x++, y++, d += d1; }
+			else { y++, d += d2; }
+			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
+			QtColor alphaColor;
+			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+
+			QtPoint point(x, y, alphaColor);
+			line.emplace_back(point);
+		}
+	}
+	else
+	{
+		d = a - 2 * b; d1 = -2 * b, d2 = 2 * (a - b);
+		while (y > y1)
+		{
+			if (d <= 0) { x++, y--, d += d2; }
+			else { y--, d += d1; }
+			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
+			QtColor alphaColor;
+			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+
+			QtPoint point(x, y, alphaColor);
+			line.emplace_back(point);
+		}
+	}
 }
 
-void QtRender::drawBrensanhamLine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
+void QtRender::rasterlizedBrensanhamLine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
 {
 	int dx = p2.cx() - p1.cx();                // x偏移量
 	int dy = p2.cy() - p1.cy();                // y偏移量
-	int ux = (p2.cx() - p1.cx() > 0) ? 1 : -1;                // x伸展方向
-	int uy = (p2.cy() - p1.cy() > 0) ? 1 : -1;                // y伸展方向
+	int ux = (dx > 0) ? 1 : -1;                // x伸展方向
+	int uy = (dy > 0) ? 1 : -1;                // y伸展方向
 
 	dx = abs(dx);
 	dy = abs(dy);
@@ -75,8 +152,6 @@ void QtRender::drawBrensanhamLine(const QtPoint& p1, const QtPoint& p2, std::vec
 
 	int x = p1.cx();  // 起点x坐标
 	int y = p1.cy();  // 起点y坐标
-
-	int t = (dx > dy) ? -dx : -dy;
 
 	if (dx > dy)
 	{
@@ -144,6 +219,35 @@ void QtRender::drawBrensanhamLine(const QtPoint& p1, const QtPoint& p2, std::vec
 				// t = t - 2dy;
 				x += ux;
 				t = t - dy2;
+			}
+		}
+	}
+}
+
+void QtRender::rasterlizedTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint& p3,
+	std::vector<QtPoint>& triangle)
+{
+	triangle.clear();
+
+	QtRect boundingBox = QtRectUtil::boundingBox({ p1, p2, p3 });
+
+	for (int y(boundingBox.cTop()); y <= boundingBox.cBottom(); ++y)
+	{
+		for (int x(boundingBox.cLeft()); x <= boundingBox.cRight(); ++x)
+		{
+			Eigen::Vector3i v1(p1.cx() - x, p1.cy() - y, 0);
+			Eigen::Vector3i v2(p2.cx() - x, p2.cy() - y, 0);
+			Eigen::Vector3i v3(p3.cx() - x, p3.cy() - y, 0);
+
+			const double cross1 = v1.cross(v2).z();
+			const double cross2 = v2.cross(v3).z();
+			const double cross3 = v3.cross(v1).z();
+
+			bool bConsistency = ((cross1 > 0) == (cross2 > 0)) && ((cross2 > 0) == (cross3 > 0));
+			if (bConsistency)
+			{
+				QtPoint point(x, y, p1.getColor());
+				triangle.emplace_back(point);
 			}
 		}
 	}

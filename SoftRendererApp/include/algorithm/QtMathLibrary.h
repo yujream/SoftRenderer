@@ -1,6 +1,10 @@
 #ifndef __QT_MATH_LIBRARY_H__
 #define __QT_MATH_LIBRARY_H__
 
+#include <vector>
+
+#include "core/QtCore.h"
+
 namespace QtMath
 {
 	const double PI = 3.14159265358979323;

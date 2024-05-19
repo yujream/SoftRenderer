@@ -38,14 +38,15 @@ void QuiSoftRendererMainWindow::render()
 {
 	m_canvas->clear();
 	//renderSnowflack();
-	renderMultiLine();
+	//renderMultiLine();
+	renderTriangle();
 }
 
 void QuiSoftRendererMainWindow::renderSnowflack()
 {
-	for (unsigned i(0); i < QtGlobal::canvasWidth; ++i)
+	for (int i(0); i < QtGlobal::canvasWidth; ++i)
 	{
-		for (unsigned j(0); j < QtGlobal::canvasHeight; ++j)
+		for (int j(0); j < QtGlobal::canvasHeight; ++j)
 		{
 			unsigned char val = std::rand() % 255;
 
@@ -62,12 +63,21 @@ void QuiSoftRendererMainWindow::renderMultiLine()
 	for (float i(0.f); i < 360.f; i += 10)
 	{
 		float radian = QtMathLibrary::deg2rad(i);
-		unsigned x = radius * std::sin(radian) + center.cx();
-		unsigned y = radius * std::cos(radian) + center.cy();
+		int x = radius * std::sin(radian) + center.cx();
+		int y = radius * std::cos(radian) + center.cy();
 
 		QtPoint pt{ x, y, QtColor{0, 0, 255}};
-		m_canvas->drawLine(center, pt, DrawLineType::DLT_DDA);
+		m_canvas->drawLine(center, pt, DrawLineType::DLT_Mid);
 	}
+}
+
+void QuiSoftRendererMainWindow::renderTriangle()
+{
+	QtPoint p1(0, 100, QtColor{ 255, 0, 0 });
+	QtPoint p2(500, 100, QtColor{ 255, 0, 0 });
+	QtPoint p3(250, 500, QtColor{ 255, 0, 0 });
+
+	m_canvas->drawTriangle(p1, p2, p3);
 }
 
 void QuiSoftRendererMainWindow::pasteToDC()

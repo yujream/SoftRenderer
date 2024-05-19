@@ -2,34 +2,37 @@
 #define __QT_POINT_H__
 
 #include <array>
+#include <vector>
 
 #include "QtColor.h"
 
 class QtPoint
 {
 public:
-	explicit QtPoint(unsigned x = 0, unsigned y = 0, const QtColor& color = 0xff000000);
+	explicit QtPoint(int x = 0, int y = 0, const QtColor& color = 0xff000000);
 	~QtPoint();
 
 public:
-	void setXY(unsigned x, unsigned y);
-	void setX(unsigned x);
-	void setY(unsigned y);
+	void setXY(int x, int y);
+	void setX(int x);
+	void setY(int y);
 
 	void setColor(const QtColor& color);
 	const QtColor& getColor()const;
 
-	unsigned x();
-	unsigned y();
-	const unsigned cx() const;
-	const unsigned cy() const;
-	unsigned& rx();
-	unsigned& ry();
+	int x();
+	int y();
+	const int cx() const;
+	const int cy() const;
+	int& rx();
+	int& ry();
 
 private:
-	std::array<unsigned, 2> m_xy;
+	std::array<int, 2> m_xy;
 	QtColor m_color;
 };
+
+using QtPointList = std::vector<QtPoint>;
 
 class QtPointUtil
 {
