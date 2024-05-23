@@ -23,7 +23,7 @@ public:
 	void drawPoint(const QtPoint& point);
 	void drawLine(const QtPoint& p1, const QtPoint& p2, DrawLineType type = DrawLineType::DLT_Brensanham);
 	void drawTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint& p3);
-
+	void drawImage(const char* path);
 private:
 	QtFrameBuffer* m_canvasBuffer{ nullptr };
 

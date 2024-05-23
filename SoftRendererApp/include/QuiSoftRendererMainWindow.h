@@ -27,6 +27,7 @@ private:
 	void renderSnowflack();
 	void renderMultiLine();
 	void renderTriangle();
+	void renderImage();
 	void pasteToDC();
 
 private:

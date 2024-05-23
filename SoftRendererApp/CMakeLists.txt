@@ -69,3 +69,8 @@ endif()
 
 # 第三方库
 include_directories("../3rd/eigen3")
+include_directories("../3rd/stb")
+
+# 拷贝资源文件
+file(GLOB copyResources "../assets")
+file(COPY ${copyResources} DESTINATION ${CMAKE_BINARY_DIR})

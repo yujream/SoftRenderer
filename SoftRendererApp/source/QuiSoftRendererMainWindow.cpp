@@ -39,7 +39,8 @@ void QuiSoftRendererMainWindow::render()
 	m_canvas->clear();
 	//renderSnowflack();
 	//renderMultiLine();
-	renderTriangle();
+	//renderTriangle();
+	renderImage();
 }
 
 void QuiSoftRendererMainWindow::renderSnowflack()
@@ -74,10 +75,16 @@ void QuiSoftRendererMainWindow::renderMultiLine()
 void QuiSoftRendererMainWindow::renderTriangle()
 {
 	QtPoint p1(0, 100, QtColor{ 255, 0, 0 });
-	QtPoint p2(500, 100, QtColor{ 255, 0, 0 });
-	QtPoint p3(250, 500, QtColor{ 255, 0, 0 });
+	QtPoint p2(500, 100, QtColor{ 0, 255, 0 });
+	QtPoint p3(250, 500, QtColor{ 0, 0, 255 });
 
 	m_canvas->drawTriangle(p1, p2, p3);
+}
+
+void QuiSoftRendererMainWindow::renderImage()
+{
+	std::string path = R"(D:\Code\QT\SoftRenderer\assets\texture\map_03.png)";
+	m_canvas->drawImage(path.c_str());
 }
 
 void QuiSoftRendererMainWindow::pasteToDC()

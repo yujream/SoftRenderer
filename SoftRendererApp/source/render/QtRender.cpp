@@ -2,6 +2,8 @@
 #include "Eigen/Eigen"
 #include <cmath>
 
+#include "core/QtImage.h"
+
 // 获取插值
 float getInterpolation(const QtPoint& startPoint, const QtPoint& interpPoint, const QtPoint& endPoint)
 {
@@ -21,6 +23,35 @@ float getInterpolation(const QtPoint& startPoint, const QtPoint& interpPoint, co
 	return alpha;
 }
 
+void InterpolationTriangle(const QtPoint& pa, const QtPoint& pb, const QtPoint& pc, QtPoint& p)
+{
+	Eigen::Vector3i AB(pb.cx() - pa.cx(), pb.cy() - pa.cy(), 0);
+	Eigen::Vector3i AC(pc.cx() - pa.cx(), pc.cy() - pa.cy(), 0);
+	const float abcArea = static_cast<float>(AB.cross(AC).z());
+
+	Eigen::Vector3i PA(pa.cx() - p.cx(), pa.cy() - p.cy(), 0);
+	Eigen::Vector3i PB(pb.cx() - p.cx(), pb.cy() - p.cy(), 0);
+	Eigen::Vector3i PC(pc.cx() - p.cx(), pc.cy() - p.cy(), 0);
+	const float bpcArea = static_cast<float>(PB.cross(PC).z());
+	const float apcArea = static_cast<float>(PC.cross(PA).z());
+	const float apbArea = static_cast<float>(PA.cross(PB).z());
+
+	const float alpha = bpcArea / abcArea;
+	const float beta = apcArea / abcArea;
+	const float gamma = apbArea / abcArea;
+
+	const QtColor& ca = pa.getColor();
+	const QtColor& cb = pb.getColor();
+	const QtColor& cc = pc.getColor();
+
+	p.setColor(QtColor(	
+		static_cast<unsigned char>(alpha * static_cast<float>(ca.m_red) + beta * static_cast<float>(cb.m_red) + gamma * static_cast<float>(cc.m_red)),
+		static_cast<unsigned char>(alpha * static_cast<float>(ca.m_green) + beta * static_cast<float>(cb.m_green) + gamma * static_cast<float>(cc.m_green)),
+		static_cast<unsigned char>(alpha * static_cast<float>(ca.m_blue) + beta * static_cast<float>(cb.m_blue) + gamma * static_cast<float>(cc.m_blue)),
+		static_cast<unsigned char>(alpha * static_cast<float>(ca.m_alpha) + beta * static_cast<float>(cb.m_alpha) + gamma * static_cast<float>(cc.m_alpha))
+	));
+}
+
 QtRender::QtRender()
 {
 	
@@ -32,6 +63,8 @@ QtRender::~QtRender()
 
 void QtRender::rasterlizedDDALine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
 {
+	line.clear();
+
 	int dx = p2.cx() - p1.cx();
 	int dy = p2.cy() - p1.cy();
 
@@ -59,6 +92,8 @@ void QtRender::rasterlizedDDALine(const QtPoint& p1, const QtPoint& p2, std::vec
 
 void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
 {
+	line.clear();
+
 	int x0 = p1.cx();
 	int x1 = p2.cx();
 	int y0 = p1.cy();
@@ -138,6 +173,8 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 
 void QtRender::rasterlizedBrensanhamLine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)
 {
+	line.clear();
+
 	int dx = p2.cx() - p1.cx();                // x偏移量
 	int dy = p2.cy() - p1.cy();                // y偏移量
 	int ux = (dx > 0) ? 1 : -1;                // x伸展方向
@@ -229,8 +266,10 @@ void QtRender::rasterlizedTriangle(const QtPoint& p1, const QtPoint& p2, const Q
 {
 	triangle.clear();
 
+	// 计算三角形包围盒
 	QtRect boundingBox = QtRectUtil::boundingBox({ p1, p2, p3 });
 
+	// 在包围盒内计算在三角形内的像素点
 	for (int y(boundingBox.cTop()); y <= boundingBox.cBottom(); ++y)
 	{
 		for (int x(boundingBox.cLeft()); x <= boundingBox.cRight(); ++x)
@@ -246,9 +285,32 @@ void QtRender::rasterlizedTriangle(const QtPoint& p1, const QtPoint& p2, const Q
 			bool bConsistency = ((cross1 > 0) == (cross2 > 0)) && ((cross2 > 0) == (cross3 > 0));
 			if (bConsistency)
 			{
-				QtPoint point(x, y, p1.getColor());
+				QtPoint point(x, y);
+				InterpolationTriangle(p1, p2, p3, point);
 				triangle.emplace_back(point);
 			}
+		}
+	}
+}
+
+void QtRender::rasterlizedImage(const char* path, std::vector<QtPoint>& pixels)
+{
+	QtImage* image = QtImageUtils::createImage(path);
+	if (nullptr == image)
+	{
+		return;
+	}
+
+	pixels.clear();
+
+	QtColor* data = image->data();
+	for (int i = 0; i < image->width(); ++i)
+	{
+		for (int j = 0; j < image->height(); ++j)
+		{
+			
+			QtPoint point(i, j, data[j * image->width() + i]);
+			pixels.emplace_back(point);
 		}
 	}
 }

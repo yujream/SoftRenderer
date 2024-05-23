@@ -3,8 +3,8 @@
 
 namespace QtGlobal
 {
-	const int canvasWidth = 1200;
-	const int canvasHeight = 800;
+	const int canvasWidth = 1600;
+	const int canvasHeight = 1200;
 }
 
 enum class DrawLineType

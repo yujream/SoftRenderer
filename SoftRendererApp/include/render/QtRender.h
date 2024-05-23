@@ -24,6 +24,9 @@ public:
 
 	// 三角形光栅化
 	static void rasterlizedTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint& p3, std::vector<QtPoint>& triangle);
+
+	// 图片光栅化
+	static void rasterlizedImage(const char* path, std::vector<QtPoint>& pixels);
 };
 
 #endif

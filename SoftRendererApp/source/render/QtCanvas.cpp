@@ -76,3 +76,14 @@ void QtCanvas::drawTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint&
 		drawPoint(point);
 	}
 }
+
+void QtCanvas::drawImage(const char* path)
+{
+	std::vector<QtPoint> pixels;
+	QtRender::rasterlizedImage(path, pixels);
+
+	for (const QtPoint& point : pixels)
+	{
+		drawPoint(point);
+	}
+}
