@@ -28,6 +28,7 @@ private:
 	void renderMultiLine();
 	void renderTriangle();
 	void renderImage();
+	void renderTriangleWithTexture();
 	void pasteToDC();
 
 private:

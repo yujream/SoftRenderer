@@ -26,6 +26,8 @@ public:
 	/// <param name="v"> 浮点数 </param>
 	/// <returns></returns>
 	static double fraction(double v);
+
+	static QtColor lerpColor(const QtColor& color1, const QtColor& color2, const float alpha);
 };
 
 #endif // !__QT_MATH_LIBRARY_H__

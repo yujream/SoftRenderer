@@ -5,6 +5,7 @@
 #include <QPainter>
 
 #include "algorithm/QtMathLibrary.h"
+#include "core/QtImage.h"
 
 QuiSoftRendererMainWindow::QuiSoftRendererMainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -40,7 +41,8 @@ void QuiSoftRendererMainWindow::render()
 	//renderSnowflack();
 	//renderMultiLine();
 	//renderTriangle();
-	renderImage();
+	//renderImage();
+	renderTriangleWithTexture();
 }
 
 void QuiSoftRendererMainWindow::renderSnowflack()
@@ -83,8 +85,30 @@ void QuiSoftRendererMainWindow::renderTriangle()
 
 void QuiSoftRendererMainWindow::renderImage()
 {
-	std::string path = R"(D:\Code\QT\SoftRenderer\assets\texture\map_03.png)";
-	m_canvas->drawImage(path.c_str());
+	m_canvas->setBlendingEnabled(true);
+	std::string path1 = R"(D:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
+	std::string path2 = R"(D:\Code\QT\SoftRenderer\assets\texture\map_02.png)";
+	m_canvas->drawImageWithAlpha(path1.c_str(), 100, 100, 100);
+	m_canvas->drawImageWithAlpha(path2.c_str(), 300, 300, 200);
+}
+
+void QuiSoftRendererMainWindow::renderTriangleWithTexture()
+{
+	std::string path = R"(D:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
+	QtImage* image = QtImageUtils::createImage(path.c_str());
+	if (nullptr == image)
+	{
+		return;
+	}
+	m_canvas->setTexture(image);
+
+	QtPoint p1(0, 100, QtColor{ 255, 0, 0 });
+	p1.setUV(0, 0);
+	QtPoint p2(500, 100, QtColor{ 0, 255, 0 });
+	p2.setUV(1, 0);
+	QtPoint p3(250, 500, QtColor{ 0, 0, 255 });
+	p3.setUV(0.5, 1);
+	m_canvas->drawTriangle(p1, p2, p3);
 }
 
 void QuiSoftRendererMainWindow::pasteToDC()

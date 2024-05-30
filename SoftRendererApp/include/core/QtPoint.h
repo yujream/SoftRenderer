@@ -17,8 +17,14 @@ public:
 	void setX(int x);
 	void setY(int y);
 
+	void setUV(float u, float v);
+	void setU(float u);
+	void setV(float v);
+
 	void setColor(const QtColor& color);
 	const QtColor& getColor()const;
+
+	void setAlpha(const unsigned char alpha);
 
 	int x();
 	int y();
@@ -27,8 +33,16 @@ public:
 	int& rx();
 	int& ry();
 
+	float u();
+	float v();
+	const float cu() const;
+	const float cv() const;
+	float& ru();
+	float& rv();
+
 private:
 	std::array<int, 2> m_xy;
+	std::array<float, 2> m_uv;
 	QtColor m_color;
 };
 

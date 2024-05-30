@@ -24,7 +24,8 @@ public:
 class QtColorUtil
 {
 public:
-	static void InterpolationColor(const QtColor& startColor, const QtColor& endColor, float alpha, QtColor& outColor);
+	static void interpolationColor(const QtColor& startColor, const QtColor& endColor, float alpha, QtColor& outColor);
+
 };
 
 #endif

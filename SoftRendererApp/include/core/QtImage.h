@@ -13,6 +13,7 @@ public:
 	int width() const;
 	int height() const;
 
+	QtColor pixel(int x, int y) const;
 private:
 	int m_width;
 	int m_height;

@@ -21,7 +21,7 @@ void QtColor::setColor(unsigned char red, unsigned char green, unsigned char blu
 	m_alpha = alpha;
 }
 
-void QtColorUtil::InterpolationColor(const QtColor& startColor, const QtColor& endColor, float alpha, QtColor& outColor)
+void QtColorUtil::interpolationColor(const QtColor& startColor, const QtColor& endColor, float alpha, QtColor& outColor)
 {
 	alpha = std::clamp(alpha, 0.f, 1.f);
 

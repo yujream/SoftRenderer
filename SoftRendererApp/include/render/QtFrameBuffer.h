@@ -17,6 +17,8 @@ public:
 
 public:
 	void setPixel(int x, int y, const QtColor& color);
+	QtColor getPixel(int x, int y);
+
 	void fill(const QtColor& color);
 
 	int width() const;

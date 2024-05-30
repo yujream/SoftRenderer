@@ -7,10 +7,10 @@
 QtImage::QtImage(int width, int height, int channels, QtColor* data)
 	: m_width(width), m_height(height), m_channels(channels)
 {
-	m_data = new QtColor[width * height * channels]();
+	m_data = new QtColor[width * height]();
 	if (nullptr != data)
 	{
-		memcpy(m_data, data, width * height * channels * sizeof(QtColor));
+		memcpy(m_data, data, width * height * sizeof(QtColor));
 	}
 }
 
@@ -36,6 +36,11 @@ int QtImage::width() const
 int QtImage::height() const
 {
 	return m_height;
+}
+
+QtColor QtImage::pixel(int x, int y) const
+{
+	return m_data[y * m_width + x];
 }
 
 

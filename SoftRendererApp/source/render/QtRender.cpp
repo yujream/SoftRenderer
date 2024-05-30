@@ -50,6 +50,10 @@ void InterpolationTriangle(const QtPoint& pa, const QtPoint& pb, const QtPoint& 
 		static_cast<unsigned char>(alpha * static_cast<float>(ca.m_blue) + beta * static_cast<float>(cb.m_blue) + gamma * static_cast<float>(cc.m_blue)),
 		static_cast<unsigned char>(alpha * static_cast<float>(ca.m_alpha) + beta * static_cast<float>(cb.m_alpha) + gamma * static_cast<float>(cc.m_alpha))
 	));
+
+	// uv插值
+	p.setU(alpha * pa.cu() + beta * pb.cu() + gamma * pc.cu());
+	p.setV(alpha * pa.cv() + beta * pb.cv() + gamma * pc.cv());
 }
 
 QtRender::QtRender()
@@ -80,7 +84,7 @@ void QtRender::rasterlizedDDALine(const QtPoint& p1, const QtPoint& p2, std::vec
 	{
 		float alpha = getInterpolation(p1, QtPoint(std::lround(x), std::lround(y)), p2);
 		QtColor alphaColor;
-		QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+		QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 		QtPoint point(std::lround(x), std::lround(y), alphaColor);
 		line.emplace_back(point);
@@ -105,7 +109,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 	else m = (float)a / (x0 - x1); x = x0, y = y0;
 	float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 	QtColor alphaColor;
-	QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+	QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 	QtPoint point(x, y, alphaColor);
 	line.emplace_back(point);
@@ -118,7 +122,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			else { x++, d += d1; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 			QtColor alphaColor;
-			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -133,7 +137,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			else { x++, d += d2; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 			QtColor alphaColor;
-			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -148,7 +152,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			else { y++, d += d2; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 			QtColor alphaColor;
-			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -163,7 +167,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			else { y--, d += d1; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 			QtColor alphaColor;
-			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -203,7 +207,7 @@ void QtRender::rasterlizedBrensanhamLine(const QtPoint& p1, const QtPoint& p2, s
 		{
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 			QtColor alphaColor;
-			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -237,7 +241,7 @@ void QtRender::rasterlizedBrensanhamLine(const QtPoint& p1, const QtPoint& p2, s
 		{
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
 			QtColor alphaColor;
-			QtColorUtil::InterpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);

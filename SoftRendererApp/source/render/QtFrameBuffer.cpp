@@ -19,8 +19,24 @@ QtFrameBuffer::~QtFrameBuffer()
 
 void QtFrameBuffer::setPixel(int x, int y, const QtColor& color)
 {
+	if ((x < 0 || x > m_width - 1) || (y < 0 || y > m_height - 1))
+	{
+		return;
+	}
+
 	int pixelPos = y * m_width + x;
 	m_colorBuffer[pixelPos] = color;
+}
+
+QtColor QtFrameBuffer::getPixel(int x, int y)
+{
+	if ((x < 0 || x > m_width - 1) || (y < 0 || y > m_height - 1))
+	{
+		return {};
+	}
+
+	int pixelPos = y * m_width + x;
+	return m_colorBuffer[pixelPos];
 }
 
 void QtFrameBuffer::fill(const QtColor& color)

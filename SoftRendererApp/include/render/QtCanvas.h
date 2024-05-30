@@ -8,6 +8,8 @@
 #include "QtRender.h"
 #include "core/QtConfig.h"
 
+class QtImage;
+
 class QtCanvas : public QObject
 {
 	Q_OBJECT
@@ -23,11 +25,22 @@ public:
 	void drawPoint(const QtPoint& point);
 	void drawLine(const QtPoint& p1, const QtPoint& p2, DrawLineType type = DrawLineType::DLT_Brensanham);
 	void drawTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint& p3);
-	void drawImage(const char* path);
+	void drawImage(const char* path, int x = 0, int y = 0);
+	void drawImageWithAlpha(const char* path, int x = 0, int y = 0, unsigned char alpha = 255);
+
+	void setBlendingEnabled(bool enable);
+	bool blendingEnable() const;
+
+	void setTexture(QtImage* texture);
+
+private:
+	// 根据 uv 坐标采样像素点
+	QtColor sampleTexture(float u, float v);
+
 private:
 	QtFrameBuffer* m_canvasBuffer{ nullptr };
-
-	QtRender* m_paint;
+	QtImage* m_texture{ nullptr };
+	bool m_enableBlending{ false };
 };
 
 #endif
