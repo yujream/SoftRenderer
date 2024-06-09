@@ -1,6 +1,7 @@
 #include "render/QtCanvas.h"
 #include <QDebug>
 
+#include "algorithm/QtMathLibrary.h"
 #include "core/QtImage.h"
 
 QtCanvas::QtCanvas(QObject* parent)
@@ -89,7 +90,7 @@ void QtCanvas::drawTriangle(const QtPoint& p1, const QtPoint& p2, const QtPoint&
 	{
 		for (QtPoint& point : triangle)
 		{
-			const QtColor& color = sampleTexture(point.cu(), point.cv());
+			const QtColor& color = m_enableBilinearity ? sampleBilinearity(point.cu(), point.cv()) : sampleTexture(point.cu(), point.cv());
 			point.setColor(color);
 			drawPoint(point);
 		}
@@ -133,9 +134,19 @@ void QtCanvas::setBlendingEnabled(bool enable)
 	m_enableBlending = enable;
 }
 
+void QtCanvas::setBilinearityEnabled(bool enable)
+{
+	m_enableBilinearity = enable;
+}
+
 bool QtCanvas::blendingEnable() const
 {
 	return m_enableBlending;
+}
+
+bool QtCanvas::bilinearity() const
+{
+	return m_enableBilinearity;
 }
 
 void QtCanvas::setTexture(QtImage* texture)
@@ -145,7 +156,51 @@ void QtCanvas::setTexture(QtImage* texture)
 
 QtColor QtCanvas::sampleTexture(float u, float v)
 {
+	if (nullptr == m_texture)
+	{
+		return {};
+	}
 	int x = static_cast<int>(std::round(static_cast<float>(m_texture->width() - 1) * u));
 	int y = static_cast<int>(std::round(static_cast<float>(m_texture->height() - 1) * v));
 	return m_texture->pixel(x, y);
+}
+
+QtColor QtCanvas::sampleBilinearity(float u, float v)
+{
+	if (nullptr == m_texture)
+	{
+		return {};
+	}
+
+	float x = u * static_cast<float>(m_texture->width() - 1);
+	float y = v * static_cast<float>(m_texture->height() - 1);
+
+	/*
+	 *              |
+	 *  left top    |  right top
+	 *	———————————————————————————
+	 *              |
+	 *	left bottom |  right bottom
+	 *              |
+	 */
+	int left = std::floor(x);
+	int right = std::ceil(x);
+	int top = std::floor(y);
+	int bottom = std::ceil(y);
+
+	// 获取四个位置的像素坐标
+	QtColor leftTopPos = m_texture->pixel(left, top);
+	QtColor leftBottomPos = m_texture->pixel(left, bottom);
+	QtColor rightTopPos = m_texture->pixel(right, top);
+	QtColor rightBottomPos = m_texture->pixel(right, bottom);
+
+	// 第一次插值
+	float yScale = (top == bottom) ? 1.f : (y - static_cast<float>(top)) / static_cast<float>(bottom - top);
+
+	QtColor leftColor = QtMathLibrary::lerpColor(leftTopPos, leftBottomPos, yScale);
+	QtColor rightColor = QtMathLibrary::lerpColor(rightTopPos, rightBottomPos, yScale);
+
+	// 第二次插值
+	float xScale = (left == right) ? 1.f : (x - static_cast<float>(left)) / static_cast<float>(right - left);
+	return QtMathLibrary::lerpColor(leftColor, rightColor, xScale);
 }

@@ -86,15 +86,15 @@ void QuiSoftRendererMainWindow::renderTriangle()
 void QuiSoftRendererMainWindow::renderImage()
 {
 	m_canvas->setBlendingEnabled(true);
-	std::string path1 = R"(D:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
-	std::string path2 = R"(D:\Code\QT\SoftRenderer\assets\texture\map_02.png)";
+	std::string path1 = R"(E:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
+	std::string path2 = R"(E:\Code\QT\SoftRenderer\assets\texture\map_02.png)";
 	m_canvas->drawImageWithAlpha(path1.c_str(), 100, 100, 100);
 	m_canvas->drawImageWithAlpha(path2.c_str(), 300, 300, 200);
 }
 
 void QuiSoftRendererMainWindow::renderTriangleWithTexture()
 {
-	std::string path = R"(D:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
+	std::string path = R"(E:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
 	QtImage* image = QtImageUtils::createImage(path.c_str());
 	if (nullptr == image)
 	{

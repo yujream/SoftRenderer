@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "algorithm/QtMathLibrary.h"
+
 QtPoint::QtPoint(int x, int y, const QtColor& color)
 {
 	m_xy[0] = x;
@@ -129,7 +131,6 @@ void QtPointUtil::InterpolationPoint(const QtPoint& p1, const QtPoint& p2, float
 	outPoint.setX(p2.cx() * alpha + p1.cx() * (1 - alpha));
 	outPoint.setY(p2.cy() * alpha + p1.cy() * (1 - alpha));
 
-	QtColor alphaColor;
-	QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+	QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 	outPoint.setColor(alphaColor);
 }

@@ -2,6 +2,7 @@
 #include "Eigen/Eigen"
 #include <cmath>
 
+#include "algorithm/QtMathLibrary.h"
 #include "core/QtImage.h"
 
 // 获取插值
@@ -83,8 +84,7 @@ void QtRender::rasterlizedDDALine(const QtPoint& p1, const QtPoint& p2, std::vec
 	for (int i(0); i < step; i++)
 	{
 		float alpha = getInterpolation(p1, QtPoint(std::lround(x), std::lround(y)), p2);
-		QtColor alphaColor;
-		QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+		QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 		QtPoint point(std::lround(x), std::lround(y), alphaColor);
 		line.emplace_back(point);
@@ -108,8 +108,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 	if (b == 0) m = -1 * a * 100;
 	else m = (float)a / (x0 - x1); x = x0, y = y0;
 	float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-	QtColor alphaColor;
-	QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+	QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 	QtPoint point(x, y, alphaColor);
 	line.emplace_back(point);
@@ -121,8 +120,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			if (d <= 0) { x++, y++, d += d2; }
 			else { x++, d += d1; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-			QtColor alphaColor;
-			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -136,8 +134,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			if (d > 0) { x++, y--, d += d1; }
 			else { x++, d += d2; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-			QtColor alphaColor;
-			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -151,8 +148,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			if (d > 0) { x++, y++, d += d1; }
 			else { y++, d += d2; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-			QtColor alphaColor;
-			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -166,8 +162,7 @@ void QtRender::rasterlizedMidLine(const QtPoint& p1, const QtPoint& p2, std::vec
 			if (d <= 0) { x++, y--, d += d2; }
 			else { y--, d += d1; }
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-			QtColor alphaColor;
-			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -206,8 +201,7 @@ void QtRender::rasterlizedBrensanhamLine(const QtPoint& p1, const QtPoint& p2, s
 		for (x = p1.cx(); x != p2.cx(); x += ux)
 		{
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-			QtColor alphaColor;
-			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);
@@ -240,8 +234,7 @@ void QtRender::rasterlizedBrensanhamLine(const QtPoint& p1, const QtPoint& p2, s
 		for (y = p1.cy(); y != p2.cy(); y += uy)
 		{
 			float alpha = getInterpolation(p1, QtPoint(x, y), p2);
-			QtColor alphaColor;
-			QtColorUtil::interpolationColor(p1.getColor(), p2.getColor(), alpha, alphaColor);
+			QtColor alphaColor = QtMathLibrary::lerpColor(p1.getColor(), p2.getColor(), alpha);
 
 			QtPoint point(x, y, alphaColor);
 			line.emplace_back(point);

@@ -17,7 +17,7 @@ if (MSVC)
 	add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
 
-set(QT_PREFIX_PATH "C:/Qt/6.4.1/msvc2019_64")
+set(QT_PREFIX_PATH "E:/Qt/6.7.1/msvc2019_64")
 set(CMAKE_PREFIX_PATH ${QT_PREFIX_PATH})
 
 include_directories(

@@ -27,6 +27,11 @@ public:
 	/// <returns></returns>
 	static double fraction(double v);
 
+	/// 颜色插值
+	/// @param color1 颜色1
+	/// @param color2 颜色2
+	/// @param alpha 插值
+	/// @return 插值后颜色
 	static QtColor lerpColor(const QtColor& color1, const QtColor& color2, const float alpha);
 };
 

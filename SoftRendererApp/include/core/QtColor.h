@@ -21,11 +21,4 @@ public:
 	unsigned int m_color : 32;
 };
 
-class QtColorUtil
-{
-public:
-	static void interpolationColor(const QtColor& startColor, const QtColor& endColor, float alpha, QtColor& outColor);
-
-};
-
 #endif
