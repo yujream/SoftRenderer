@@ -9,7 +9,7 @@
 class QtPoint
 {
 public:
-	explicit QtPoint(int x = 0, int y = 0, const QtColor& color = 0xff000000);
+	explicit QtPoint(int x = 0, int y = 0, const QtColor& color = 0xff000000, float u = 0.f, float v = 0.f);
 	~QtPoint();
 
 public:

@@ -11,8 +11,8 @@
 class QtRender
 {
 public:
-	explicit QtRender();
-	~QtRender();
+	explicit QtRender() = default;
+	~QtRender() = default;
 
 public:
 	// DDA 算法

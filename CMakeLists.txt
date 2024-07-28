@@ -13,3 +13,4 @@ project ("SoftRenderer")
 
 # 包含子项目。
 add_subdirectory ("SoftRendererApp")
+add_subdirectory ("submodules/MathUtils")

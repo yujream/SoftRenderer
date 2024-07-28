@@ -3,6 +3,8 @@
 
 #include "algorithm/QtMathLibrary.h"
 #include "core/QtImage.h"
+#include "render/QtRender.h"
+#include "algorithm/MathTool.h"
 
 QtCanvas::QtCanvas(QObject* parent)
 	: QObject(parent)
@@ -149,6 +151,11 @@ bool QtCanvas::bilinearity() const
 	return m_enableBilinearity;
 }
 
+void QtCanvas::setTextrueWrap(const TextureWrap& wrap)
+{
+	m_wrap = wrap;
+}
+
 void QtCanvas::setTexture(QtImage* texture)
 {
 	m_texture = texture;
@@ -160,6 +167,10 @@ QtColor QtCanvas::sampleTexture(float u, float v)
 	{
 		return {};
 	}
+
+	wrapUOrV(u);
+	wrapUOrV(v);
+
 	int x = static_cast<int>(std::round(static_cast<float>(m_texture->width() - 1) * u));
 	int y = static_cast<int>(std::round(static_cast<float>(m_texture->height() - 1) * v));
 	return m_texture->pixel(x, y);
@@ -171,6 +182,9 @@ QtColor QtCanvas::sampleBilinearity(float u, float v)
 	{
 		return {};
 	}
+
+	wrapUOrV(u);
+	wrapUOrV(v);
 
 	float x = u * static_cast<float>(m_texture->width() - 1);
 	float y = v * static_cast<float>(m_texture->height() - 1);
@@ -189,18 +203,41 @@ QtColor QtCanvas::sampleBilinearity(float u, float v)
 	int bottom = std::ceil(y);
 
 	// 获取四个位置的像素坐标
-	QtColor leftTopPos = m_texture->pixel(left, top);
-	QtColor leftBottomPos = m_texture->pixel(left, bottom);
-	QtColor rightTopPos = m_texture->pixel(right, top);
-	QtColor rightBottomPos = m_texture->pixel(right, bottom);
+	const QtColor& leftTopPos = m_texture->pixel(left, top);
+	const QtColor& leftBottomPos = m_texture->pixel(left, bottom);
+	const QtColor& rightTopPos = m_texture->pixel(right, top);
+	const QtColor& rightBottomPos = m_texture->pixel(right, bottom);
 
 	// 第一次插值
 	float yScale = (top == bottom) ? 1.f : (y - static_cast<float>(top)) / static_cast<float>(bottom - top);
 
-	QtColor leftColor = QtMathLibrary::lerpColor(leftTopPos, leftBottomPos, yScale);
-	QtColor rightColor = QtMathLibrary::lerpColor(rightTopPos, rightBottomPos, yScale);
+	const QtColor& leftColor = QtMathLibrary::lerpColor(leftTopPos, leftBottomPos, yScale);
+	const QtColor& rightColor = QtMathLibrary::lerpColor(rightTopPos, rightBottomPos, yScale);
 
 	// 第二次插值
 	float xScale = (left == right) ? 1.f : (x - static_cast<float>(left)) / static_cast<float>(right - left);
 	return QtMathLibrary::lerpColor(leftColor, rightColor, xScale);
+}
+
+void QtCanvas::wrapUOrV(float& uOrV)
+{
+	if (uOrV >= 0 && uOrV <= 1)
+	{
+		return;
+	}
+
+	float n = math::MathTool::fraction(uOrV);
+	switch (m_wrap)
+	{
+	case TextureWrap::TW_Repeat:
+		uOrV = math::MathTool::fraction(1.f + n);
+		break;
+	case TextureWrap::TW_Mirror:
+		uOrV = 1.f - math::MathTool::fraction(1.f + n);
+		break;
+	case TextureWrap::TW_Stretch:
+		break;
+	default:
+		break;
+	}
 }

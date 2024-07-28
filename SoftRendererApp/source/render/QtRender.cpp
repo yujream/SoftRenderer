@@ -4,6 +4,7 @@
 
 #include "algorithm/QtMathLibrary.h"
 #include "core/QtImage.h"
+#include "MathHeader.h"
 
 // 获取插值
 float getInterpolation(const QtPoint& startPoint, const QtPoint& interpPoint, const QtPoint& endPoint)
@@ -55,15 +56,6 @@ void InterpolationTriangle(const QtPoint& pa, const QtPoint& pb, const QtPoint& 
 	// uv插值
 	p.setU(alpha * pa.cu() + beta * pb.cu() + gamma * pc.cu());
 	p.setV(alpha * pa.cv() + beta * pb.cv() + gamma * pc.cv());
-}
-
-QtRender::QtRender()
-{
-	
-}
-
-QtRender::~QtRender()
-{
 }
 
 void QtRender::rasterlizedDDALine(const QtPoint& p1, const QtPoint& p2, std::vector<QtPoint>& line)

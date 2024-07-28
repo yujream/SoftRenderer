@@ -1,11 +1,9 @@
 #include "QuiSoftRendererMainWindow.h"
 #include "ui_QuiSoftRendererMainWindow.h"
 #include "core/QtConfig.h"
-
-#include <QPainter>
-
-#include "algorithm/QtMathLibrary.h"
+#include "algorithm/MathTool.h"
 #include "core/QtImage.h"
+#include <QPainter>
 
 QuiSoftRendererMainWindow::QuiSoftRendererMainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -42,7 +40,8 @@ void QuiSoftRendererMainWindow::render()
 	//renderMultiLine();
 	//renderTriangle();
 	//renderImage();
-	renderTriangleWithTexture();
+	//renderTriangleWithTexture();
+	renderTextureWrap();
 }
 
 void QuiSoftRendererMainWindow::renderSnowflack()
@@ -65,7 +64,7 @@ void QuiSoftRendererMainWindow::renderMultiLine()
 	QtPoint center{ 400, 400, QtColor{255, 0, 0} };
 	for (float i(0.f); i < 360.f; i += 10)
 	{
-		float radian = QtMathLibrary::deg2rad(i);
+		float radian = math::MathTool::degreeToRadian(i);
 		int x = radius * std::sin(radian) + center.cx();
 		int y = radius * std::cos(radian) + center.cy();
 
@@ -109,6 +108,27 @@ void QuiSoftRendererMainWindow::renderTriangleWithTexture()
 	QtPoint p3(250, 500, QtColor{ 0, 0, 255 });
 	p3.setUV(0.5, 1);
 	m_canvas->drawTriangle(p1, p2, p3);
+}
+
+void QuiSoftRendererMainWindow::renderTextureWrap()
+{
+	std::string path = R"(E:\Code\QT\SoftRenderer\assets\texture\map_01.png)";
+	QtImage* image = QtImageUtils::createImage(path.c_str());
+	if (nullptr == image)
+	{
+		return;
+	}
+	m_canvas->setTexture(image);
+
+	m_p1.setU(m_p1.cu() + m_speed);
+	m_p2.setU(m_p2.cu() + m_speed);
+	m_p3.setU(m_p3.cu() + m_speed);
+	m_p4.setU(m_p4.cu() + m_speed);
+	m_p5.setU(m_p5.cu() + m_speed);
+	m_p6.setU(m_p6.cu() + m_speed);
+
+	m_canvas->drawTriangle(m_p1, m_p2, m_p3);
+	m_canvas->drawTriangle(m_p4, m_p5, m_p6);
 }
 
 void QuiSoftRendererMainWindow::pasteToDC()

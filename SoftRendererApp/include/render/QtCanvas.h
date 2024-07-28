@@ -4,9 +4,7 @@
 #include <qobject.h>
 
 #include "QtFrameBuffer.h"
-#include "core/QtColor.h"
-#include "QtRender.h"
-#include "core/QtConfig.h"
+#include "core/QtCore.h"
 
 class QtImage;
 
@@ -33,6 +31,8 @@ public:
 	bool blendingEnable() const;
 	bool bilinearity() const;
 
+	void setTextrueWrap(const TextureWrap& wrap);
+
 	void setTexture(QtImage* texture);
 
 private:
@@ -40,12 +40,16 @@ private:
 	QtColor sampleTexture(float u, float v);
 	// 双线性插值
 	QtColor sampleBilinearity(float u, float v);
+	// wrap
+	void wrapUOrV(float& uOrV);
 
 private:
 	QtFrameBuffer* m_canvasBuffer{ nullptr };
 	QtImage* m_texture{ nullptr };
 	bool m_enableBlending{ false };
 	bool m_enableBilinearity{ false };
+
+	TextureWrap m_wrap{ TextureWrap::TW_Mirror };
 };
 
 #endif

@@ -14,4 +14,11 @@ enum class DrawLineType
 	DLT_Brensanham
 };
 
+enum class TextureWrap
+{
+	TW_Repeat,     // 重复
+	TW_Mirror,     // 镜像
+	TW_Stretch     // 拉伸
+};
+
 #endif

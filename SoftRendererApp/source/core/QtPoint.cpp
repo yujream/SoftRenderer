@@ -4,13 +4,13 @@
 
 #include "algorithm/QtMathLibrary.h"
 
-QtPoint::QtPoint(int x, int y, const QtColor& color)
+QtPoint::QtPoint(int x, int y, const QtColor& color, float u, float v)
 {
 	m_xy[0] = x;
 	m_xy[1] = y;
+	m_uv[0] = u;
+	m_uv[1] = v;
 	m_color = color;
-
-	m_uv.fill(0);
 }
 
 QtPoint::~QtPoint()
